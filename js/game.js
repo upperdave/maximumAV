@@ -32,59 +32,36 @@ function create() {
     repeat: -1
   });
 
-  // enemies speed
-  gameState.enemyVelocity = 1;
 
-  // create enemies
-  const cars = this.physics.add.group();
-
-  function enemiesGen () {
-    const xCoord = Phaser.Math.Between(this.game.config.width);
-    cars.create(xCoord, -64, 'car1');
-  }
-
-  // enemy spawner loop
-  const enemiesGenLoop = this.time.addEvent({
-    delay: 500,
-    callback: enemiesGen,
-    callbackScope: this,
-    loop: true
+  // create enemy group
+  group = this.add.group({
+    defaultKey: 'alien',
+    maxSize: 100,
+    createCallback: function (alien) {
+        alien.setName('alien' + this.getLength());
+        console.log('Created', alien.name);
+    },
+    removeCallback: function (alien) {
+        console.log('Removed', alien.name);
+    }
   });
 
-  gameState.enemies = this.physics.add.group();
-	  for(let yVal = 1; yVal < 4; yVal++){
-    for(let xVal = 1; xVal <9; xVal++){
-        gameState.enemies.create(50 * xVal, 50 * yVal, 'car1').setGravityY(0)
-      }
-  }
+  // You could also fill the group first:
+  // group.createMultiple({
+  //     active: false,
+  //     key: group.defaultKey,
+  //     repeat: group.maxSize - 1
+  // });
 
+  this.time.addEvent({
+      delay: 100,
+      loop: true,
+      callback: addAlien
+  });
 
   // score text
   gameState.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '15px', fill: '#000000' })
 
-  // collison counter 
-  const bottom = this.physics.add.staticGroup();
-  bottom.create(240, 840, 'bottom');
-
-  // score recorded when cars hit bottom bar
-  this.physics.add.collider(cars, bottom, function () {
-    gameState.score += 1;
-    gameState.scoreText.setText(`Score: ${gameState.score}`);
-  });
-
-  // car collider 
-  this.physics.add.collider(gameState.player, cars, () => {
-    enemiesGenLoop.destroy();
-    this.physics.pause();
-    this.add.text(180, 250, 'Game Over', { fontSize: '15px', fill: '#000000' });
-    this.add.text(152, 270, 'Click to Restart', { fontSize: '15px', fill: '#000000' });
-    
-		// restart
-    this.input.on('pointerup', () =>{
-      gameState.score = 0;
-    	this.scene.restart();
-    });
-  });
 
 }
 
@@ -99,9 +76,47 @@ function update() {
     } else {
       gameState.player.setVelocityX(0);
       gameState.player.anims.play('idle', true);
-    };
+  };
+
+  // alien movement
+  Phaser.Actions.IncY(group.getChildren(), 1);
+
+  group.children.iterate(function (alien) {
+      if (alien.y > 800) {
+          group.killAndHide(alien);
+          gameState.score += 1;
+          gameState.scoreText.setText(`Score: ${gameState.score}`);
+      }
+  });
 
 }
+
+// activate aliens 
+function activateAlien (alien) {
+  alien
+  .setActive(true)
+  .setVisible(true)
+  .setTint(Phaser.Display.Color.RandomRGB().color)
+  .play('idle');
+}
+
+function addAlien () {
+  // generate a random # between # of lanes (11)
+  
+
+  // Random position above screen
+  const x = Phaser.Math.Between(64, 416);
+  const y = Phaser.Math.Between(-64, 0);
+
+  // Find first inactive sprite in group or add new sprite, and set position
+  const alien = group.get(x, y);
+
+  // None free or already at maximum amount of sprites in group
+  if (!alien) return;
+
+  activateAlien(alien);
+}
+
 
 const config = {
   type: Phaser.AUTO,
@@ -110,10 +125,6 @@ const config = {
   backgroundColor: "77607d",
   physics: {
     default: 'arcade',
-    arcade: {
-      gravity: { y: 100 },
-      enableBody: true,
-    }
   },
   scene: {
     preload,
