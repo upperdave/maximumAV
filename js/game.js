@@ -1,7 +1,5 @@
 function preload() {
-  this.load.image('car1', 'assets/car-1.gif')
-  this.load.image('car2', 'assets/car-2.gif')
-  this.load.image('car3', 'assets/car-3.gif')
+
   this.load.spritesheet('player', 'assets/player.png', { frameWidth: 32, frameHeight: 32 });
   this.load.image('bottom', 'assets/bottom.gif')
 }
@@ -31,9 +29,6 @@ function create() {
     frameRate: 5,
     repeat: -1
   });
-
-  // create an array of enemie sprites 
-
 
   // create enemy group
   group = this.add.group({
