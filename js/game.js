@@ -32,6 +32,8 @@ function create() {
     repeat: -1
   });
 
+  // create an array of enemie sprites 
+
 
   // create enemy group
   group = this.add.group({
@@ -54,7 +56,7 @@ function create() {
   // });
 
   this.time.addEvent({
-      delay: 100,
+      delay: 500,
       loop: true,
       callback: addAlien
   });
@@ -89,6 +91,7 @@ function update() {
       }
   });
 
+
 }
 
 // activate aliens 
@@ -102,7 +105,7 @@ function activateAlien (alien) {
 
 function addAlien () {
   // generate a random # between # of lanes (11)
-  
+
 
   // Random position above screen
   const x = Phaser.Math.Between(64, 416);
