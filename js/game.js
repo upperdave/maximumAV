@@ -81,7 +81,7 @@ function update() {
   };
 
   // alien movement
-  Phaser.Actions.IncY(group.getChildren(), 1);
+  Phaser.Actions.IncY(group.getChildren(), 3);
 
   group.children.iterate(function (alien) {
       if (alien.y > 800) {
