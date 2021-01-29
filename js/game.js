@@ -1,17 +1,29 @@
 function preload() {
 
+  this.load.image('car-1', 'assets/car-1.gif');
+  this.load.image('car-2', 'assets/car-2.gif');
+  this.load.image('car-3', 'assets/car-3.gif');
   this.load.spritesheet('player', 'assets/player.png', { frameWidth: 32, frameHeight: 32 });
-
   this.load.spritesheet('dumpster', 'assets/dumpster.png', { frameWidth: 32, frameHeight: 32 });
+
 }
 
 const gameState = { score: 0 };
 
-function create() {
-  // player sprite
-  gameState.player = this.physics.add.sprite(480/2, 774, 'player');
+let vehicles;
 
-  gameState.player.setCollideWorldBounds(true);
+function create() {
+
+  vehicles = this.add.group();
+
+  this.time.addEvent({
+    callback: spawnVehicle,
+    delay: 2000, // 2 seconds
+    loop: true
+  });
+
+  // player sprite
+  gameState.player = this.add.sprite(480/2, 600, 'player');
 
   // create cursors
   gameState.cursors = this.input.keyboard.createCursorKeys();
@@ -39,103 +51,70 @@ function create() {
     repeat: -1
   });
 
-  // create enemy group
-  group = this.add.group({
-    defaultKey: 'alien',
-    maxSize: 100,
-  });
-
-
-
-
-  // You could also fill the group first:
-  // group.createMultiple({
-  //     active: false,
-  //     key: group.defaultKey,
-  //     repeat: group.maxSize - 1
-  // });
-
-  this.time.addEvent({
-      delay: 500,
-      loop: true,
-      callback: addAlien
-  });
-
   // score text
   gameState.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '15px', fill: '#000000' })
-  
 
+}
+
+
+
+/**
+ * Spawns a vehicle in a random lane.
+ */
+function spawnVehicle() {
+
+  const lane = Phaser.Math.RND.between(1, 11);
+
+  const x = 32 * lane + 48;
+  const y = -32;
+
+  const key = Phaser.Math.RND.pick(['car-1', 'car-2', 'car-3', 'dumpster']);
+
+  const vehicle = vehicles.get(x, y, key);
+
+  if (!vehicle) {
+    return;
+  }
+
+  vehicle
+    .setActive(true)
+    .setVisible(true);
 }
 
 function update() {
+
   //create controls
-  if(gameState.cursors.left.isDown) {
-    gameState.player.setVelocityX(-160);
-    gameState.player.anims.play('idle', true);
-    } else if (gameState.cursors.right.isDown) {
-      gameState.player.setVelocityX(160);
-      gameState.player.anims.play('idle', true);
-    } else {
-      gameState.player.setVelocityX(0);
-      gameState.player.anims.play('idle', true);
-  };
+	if (gameState.active) {
+		// If the game is active, then players can control Codey
+		if (gameState.cursors.left.isDown) {
+			gameState.player.setVelocityX(-160);
+		} else if (gameState.cursors.right.isDown) {
+			gameState.player.setVelocityX(160);
+		} else {
+			gameState.player.setVelocityX(0);
+		}
 
-  // alien movement
-  Phaser.Actions.IncY(group.getChildren(), 3);
+    
+  }
 
-  group.children.iterate(function (alien) {
-      if (alien.y > 800) {
-          group.killAndHide(alien);
-          gameState.score += 1;
-          gameState.scoreText.setText(`Score: ${gameState.score}`);
-      }
+  Phaser.Actions.IncY(vehicles.getChildren(), 2);
+
+  vehicles.children.iterate((vehicle) => {
+    // Is the vehicle off the bottom of the screen?
+    if (vehicle.y > 640) {
+      vehicles.killAndHide(vehicle);
+      gameState.score -+1 ;
+      gameState.scoreText.setText(`Score: ${gameState.score}`);
+    }
   });
-
-
 }
-
-// activate aliens 
-function activateAlien (alien) {
-  alien
-  .setActive(true)
-  .setVisible(true)
-  .setTint(Phaser.Display.Color.RandomRGB().color)
-  .play('idle');
-}
-
-
-
-
-function addAlien () {
-  // generate a random # between # of lanes (11)
-
-  // Random position above screen
-  const x = Phaser.Math.Between(64, 416);
-  const y = Phaser.Math.Between(-64, 0);
-
-  // Find first inactive sprite in group or add new sprite, and set position
-  const alien = group.get(x, y);
-
-  // None free or already at maximum amount of sprites in group
-  if (!alien) return;
-
-  activateAlien(alien);
-}
-
 
 const config = {
-  type: Phaser.AUTO,
-  width: 480,
-  height: 800,
   backgroundColor: "77607d",
-  physics: {
-    default: 'arcade',
-  },
-  scene: {
-    preload,
-    create,
-    update
-  }
-}
+  height: 640,
+  scene: { preload, create, update },
+  width: 480
+};
 
 const game = new Phaser.Game(config)
+
