@@ -47,14 +47,14 @@ function update() {
 
   vehicles.children.iterate((vehicle) => {
     // Is the vehicle off the bottom of the screen?
-    if (vehicle.y > 715) {
+    if (vehicle.y > 640) {
       vehicles.killAndHide(vehicle);
     }
   });
 }
 
 const config = {
-  height: 715,
+  height: 640,
   scene: { preload, create, update },
   width: 480
 };
