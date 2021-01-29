@@ -1,7 +1,8 @@
 function preload() {
 
   this.load.spritesheet('player', 'assets/player.png', { frameWidth: 32, frameHeight: 32 });
-  this.load.image('bottom', 'assets/bottom.gif')
+
+  this.load.spritesheet('dumpster', 'assets/dumpster.png', { frameWidth: 32, frameHeight: 32 });
 }
 
 const gameState = { score: 0 };
@@ -30,18 +31,22 @@ function create() {
     repeat: -1
   });
 
+  // dumpster 
+  this.anims.create({
+    key: 'dumpster',
+    frames: this.anims.generateFrameNumbers('dumpster', { start: 0, end: 6 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
   // create enemy group
   group = this.add.group({
     defaultKey: 'alien',
     maxSize: 100,
-    createCallback: function (alien) {
-        alien.setName('alien' + this.getLength());
-        console.log('Created', alien.name);
-    },
-    removeCallback: function (alien) {
-        console.log('Removed', alien.name);
-    }
   });
+
+
+
 
   // You could also fill the group first:
   // group.createMultiple({
@@ -58,7 +63,7 @@ function create() {
 
   // score text
   gameState.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '15px', fill: '#000000' })
-
+  
 
 }
 
@@ -98,9 +103,11 @@ function activateAlien (alien) {
   .play('idle');
 }
 
+
+
+
 function addAlien () {
   // generate a random # between # of lanes (11)
-
 
   // Random position above screen
   const x = Phaser.Math.Between(64, 416);
