@@ -23,9 +23,9 @@ function preload() {
  */
 function spawnVehicle() {
 
-  const lane = Phaser.Math.RND.between(0, 11);
+  const lane = Phaser.Math.RND.between(1, 11);
 
-  const x = 32 * lane + 80;
+  const x = 32 * lane + 48;
   const y = -32;
 
   const key = Phaser.Math.RND.pick(['car-1', 'car-2', 'car-3']);
