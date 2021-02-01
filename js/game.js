@@ -19,27 +19,17 @@ let vehicles;
 
 function create() {
 
+  gameState.active = true;
+
+  this.input.on('pointerup', () => {
+		if (gameState.active === false) {
+			this.scene.restart();
+		}
+	})
+
   // player sprite
   gameState.player = this.add.sprite(480/2, 600, 'player');
-
-  // create cursors
-  gameState.cursors = this.input.keyboard.createCursorKeys();
-
-  // player animations
-  this.anims.create({
-    key: 'idle',
-    frames: this.anims.generateFrameNumbers('player', { start: 0, end: 2 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
-  this.anims.create({
-    key: 'boost',
-    frames: this.anims.generateFrameNumbers('player', { start: 4, end: 6 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
+  
   // dumpster 
   this.anims.create({
     key: 'dumpster',
@@ -59,6 +49,9 @@ function create() {
 
   // score text
   gameState.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '15px', fill: '#000000' })
+
+  // create cursors
+  gameState.cursors = this.input.keyboard.createCursorKeys();
 
 }
 
@@ -91,26 +84,28 @@ function spawnVehicle() {
 function update() {
 
   //create controls
-	if (gameState.active) {
-		// If the game is active, then players can control Codey
-		if (gameState.cursors.left.isDown) {
-			gameState.player.setVelocityX(-160);
-		} else if (gameState.cursors.right.isDown) {
-			gameState.player.setVelocityX(160);
-		} else {
-			gameState.player.setVelocityX(0);
-		}
 
-    
-  }
+  /* this isn't working for some reason? */
 
-  Phaser.Actions.IncY(vehicles.getChildren(), 5);
+	// if (gameState.active) {
+	// 	if (gameState.cursors.left.isDown) {
+	// 		gameState.player.setVelocityX(-160);
+	// 	} else if (gameState.cursors.right.isDown) {
+	// 		gameState.player.setVelocityX(160);
+	// 	} else {
+	// 		gameState.player.setVelocityX(0);
+  //   }
+  // }
+
+
+
+  Phaser.Actions.IncY(vehicles.getChildren(), 3);
 
   vehicles.children.iterate((vehicle) => {
     // Is the vehicle off the bottom of the screen?
     if (vehicle.y > 640) {
       vehicles.killAndHide(vehicle);
-      gameState.score =+ 1 ;
+      gameState.score += 1 ;
       gameState.scoreText.setText(`Score: ${gameState.score}`);
     }
   });
@@ -120,6 +115,9 @@ const config = {
   backgroundColor: "77607d",
   height: 640,
   scene: { preload, create, update },
+  physics: {
+		default: 'arcade',
+	},
   width: 480
 };
 
