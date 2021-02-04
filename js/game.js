@@ -73,7 +73,6 @@ function spawnVehicle() {
   vehicle
     .setActive(true)
     .setVisible(true);
-    console.log(key);
 }
 
 function update() {
