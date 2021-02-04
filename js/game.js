@@ -10,7 +10,6 @@ function preload() {
   this.load.image('oil', 'assets/oil.png');
   this.load.spritesheet('semi', 'assets/semi.png', { frameWidth: 32, frameHeight: 64 });
   this.load.spritesheet('bus', 'assets/bus.png', { frameWidth: 32, frameHeight: 64 });
-
 }
 
 const gameState = { score: 0 };
@@ -38,7 +37,6 @@ function create() {
     repeat: -1
   });
 
-
   vehicles = this.add.group();
 
   this.time.addEvent({
@@ -52,10 +50,7 @@ function create() {
 
   // create cursors
   gameState.cursors = this.input.keyboard.createCursorKeys();
-
 }
-
-
 
 /**
  * Spawns a vehicle in a random lane.
@@ -97,8 +92,6 @@ function update() {
   //   }
   // }
 
-
-
   Phaser.Actions.IncY(vehicles.getChildren(), 3);
 
   vehicles.children.iterate((vehicle) => {
@@ -122,4 +115,3 @@ const config = {
 };
 
 const game = new Phaser.Game(config)
-
