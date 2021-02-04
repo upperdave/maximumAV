@@ -43,7 +43,7 @@ function create() {
 
   this.time.addEvent({
     callback: spawnVehicle,
-    delay: 500, // 2 seconds
+    delay: 500,
     loop: true
   });
 
