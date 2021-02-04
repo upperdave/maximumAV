@@ -22,10 +22,10 @@ function create() {
   gameState.active = true;
 
   this.input.on('pointerup', () => {
-		if (gameState.active === false) {
-			this.scene.restart();
-		}
-	})
+    if (gameState.active === false) {
+      this.scene.restart();
+    }
+  })
 
   // player sprite
   gameState.player = this.add.sprite(480/2, 600, 'player');
@@ -87,13 +87,13 @@ function update() {
 
   /* this isn't working for some reason? */
 
-	// if (gameState.active) {
-	// 	if (gameState.cursors.left.isDown) {
-	// 		gameState.player.setVelocityX(-160);
-	// 	} else if (gameState.cursors.right.isDown) {
-	// 		gameState.player.setVelocityX(160);
-	// 	} else {
-	// 		gameState.player.setVelocityX(0);
+  // if (gameState.active) {
+  //   if (gameState.cursors.left.isDown) {
+  //     gameState.player.setVelocityX(-160);
+  //   } else if (gameState.cursors.right.isDown) {
+  //     gameState.player.setVelocityX(160);
+  //   } else {
+  //     gameState.player.setVelocityX(0);
   //   }
   // }
 
@@ -116,8 +116,8 @@ const config = {
   height: 640,
   scene: { preload, create, update },
   physics: {
-		default: 'arcade',
-	},
+    default: 'arcade',
+  },
   width: 480
 };
 
