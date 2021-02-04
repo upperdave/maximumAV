@@ -95,7 +95,7 @@ function update() {
 
   vehicles.children.iterate((vehicle) => {
     // Is the vehicle off the bottom of the screen?
-    if (vehicle.y > 640) {
+    if (vehicle.y > game.config.height) {
       vehicles.killAndHide(vehicle);
       gameState.score += 1 ;
       gameState.scoreText.setText(`Score: ${gameState.score}`);
