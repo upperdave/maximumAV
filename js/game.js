@@ -29,8 +29,8 @@ function create() {
 
   // player sprite
   gameState.player = this.add.sprite(480/2, 600, 'player');
-  
-  // dumpster 
+
+  // dumpster
   this.anims.create({
     key: 'dumpster',
     frames: this.anims.generateFrameNumbers('dumpster', { start: 0, end: 6 }),
