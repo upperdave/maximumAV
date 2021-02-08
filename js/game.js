@@ -38,7 +38,6 @@ function create() {
     repeat: -1
   });
 
-
   vehicles = this.add.group();
 
   this.time.addEvent({
