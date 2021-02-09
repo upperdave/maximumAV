@@ -10,7 +10,8 @@ function preload() {
   this.load.image('oil', 'assets/oil.png');
   this.load.spritesheet('semi', 'assets/semi.png', { frameWidth: 32, frameHeight: 64 });
   this.load.spritesheet('bus', 'assets/bus.png', { frameWidth: 32, frameHeight: 64 });
-
+  this.load.spritesheet('bus', 'assets/bus.png', { frameWidth: 32, frameHeight: 64 });
+  this.load.spritesheet('line', 'assets/line.png', { frameWidth: 4, frameHeight: 32 });
 }
 
 const gameState = { score: 0 };
@@ -19,17 +20,32 @@ let vehicles;
 
 function create() {
 
-  gameState.active = true;
+	// When gameState.active is true, the game is being played and not over. When gameState.active is false, then it's game over
+	gameState.active = true;
 
-  this.input.on('pointerup', () => {
-		if (gameState.active === false) {
-			this.scene.restart();
-		}
-	})
+	// When gameState.active is false, the game will listen for a pointerup event and restart when the event happens
+	// this.input.on('pointerup', () => {
+	// 	if (gameState.active === false) {
+	// 		this.scene.restart();
+	// 	}
+	// })
+
 
   // player sprite
-  gameState.player = this.add.sprite(480/2, 600, 'player');
-  
+  gameState.player = this.physics.add.sprite(game.config.width / 2, 600, 'player');
+
+  gameState.player.setCollideWorldBounds(true);
+
+  // 
+  this.physics.add.collider(gameState.player, vehicles);
+
+  this.physics.add.overlap(gameState.player, vehicles, () => {
+    this.add.text(150, 50, '      Game Over...\n  Click to play again.', { fontFamily: 'Arial', fontSize: 36, color: '#ffffff' });
+    this.physics.pause();
+    gameState.active = false;
+  });
+
+
   // dumpster 
   this.anims.create({
     key: 'dumpster',
@@ -38,7 +54,7 @@ function create() {
     repeat: -1
   });
 
-  vehicles = this.add.group();
+  gameState.vehicles = this.physics.add.group();
 
   this.time.addEvent({
     callback: spawnVehicle,
@@ -68,7 +84,7 @@ function spawnVehicle() {
 
   const key = Phaser.Math.RND.pick(['car-1', 'car-2', 'car-3', 'dumpster', 'semi', 'bus', 'oil', 'pothole']);
 
-  const vehicle = vehicles.get(x, y, key);
+  const vehicle = gameState.vehicles.get(x, y, key);
 
   if (!vehicle) {
     return;
@@ -82,28 +98,45 @@ function spawnVehicle() {
 
 function update() {
 
+  //player speed
+  gameState.playerMoveX = 8;
+
   //create controls
 
-  /* this isn't working for some reason? */
+	if (gameState.active) {
+		// If the game is active, then players can control the player
+    if (gameState.cursors.right.isDown) {
+      // player moves right
+      gameState.player.x += gameState.playerMoveX;
 
-	// if (gameState.active) {
-	// 	if (gameState.cursors.left.isDown) {
-	// 		gameState.player.setVelocityX(-160);
-	// 	} else if (gameState.cursors.right.isDown) {
-	// 		gameState.player.setVelocityX(160);
-	// 	} else {
-	// 		gameState.player.setVelocityX(0);
-  //   }
-  // }
+    }  else if (gameState.cursors.left.isDown) {
+      // player moves left
+      gameState.player.x -= gameState.playerMoveX;
+ 
+      // gameState.player.move;
+    } else {
+      // player don't move
+      gameState.player.setVelocity(0, 0);
+    }
+
+		// Execute code if the spacebar key is pressed
+		if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
+			
+		}
+
+		// Add logic for winning condition and enemy movements below:
+    
+  }
+  
 
 
 
-  Phaser.Actions.IncY(vehicles.getChildren(), 3);
+  Phaser.Actions.IncY(gameState.vehicles.getChildren(), 3);
 
-  vehicles.children.iterate((vehicle) => {
+  gameState.vehicles.children.iterate((vehicle) => {
     // Is the vehicle off the bottom of the screen?
     if (vehicle.y > 640) {
-      vehicles.killAndHide(vehicle);
+      gameState.vehicles.killAndHide(vehicle);
       gameState.score += 1 ;
       gameState.scoreText.setText(`Score: ${gameState.score}`);
     }
@@ -115,7 +148,7 @@ const config = {
   height: 640,
   scene: { preload, create, update },
   physics: {
-		default: 'arcade',
+	    default: 'arcade',
 	},
   width: 480
 };
