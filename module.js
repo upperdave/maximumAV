@@ -1,10 +1,15 @@
 import Main from '/scenes/main.js';
+import Start from '/scenes/start.js';
 
 const config = {
   backgroundColor: '77607d',
   height: 640,
-  scene: [ Main ],
+  physics: {
+    arcade: { debug: true },
+    default: 'arcade'
+  },
+  scene: [ Start, Main ],
   width: 480
 };
 
-const game = new Phaser.Game(config);
+new Phaser.Game(config);

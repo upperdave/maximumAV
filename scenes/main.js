@@ -1,4 +1,3 @@
-let cursors;
 let hazards;
 let player;
 let score;
@@ -46,14 +45,12 @@ class Main extends Phaser.Scene {
 
   constructor() {
 
-    super();
+    super({ key: 'main' });
 
     score = 0;
   }
 
   create() {
-
-    cursors = this.input.keyboard.createCursorKeys();
 
     scoreText = this.add.text(0, 16, 'Score: 0', {
       align: 'center',
@@ -65,7 +62,7 @@ class Main extends Phaser.Scene {
 
     // Hazards
 
-    hazards = this.add.group();
+    hazards = this.physics.add.group();
 
     this.time.addEvent({
       callback: spawnHazard,
@@ -91,13 +88,29 @@ class Main extends Phaser.Scene {
       repeat: -1
     });
 
-    player = this.add.sprite(
+    player = this.physics.add.sprite(
       this.game.config.width / 2,
       this.game.config.height - 32 // frameHeight
     );
 
     player.play('drive');
+    player.setCollideWorldBounds(true);
     player.setDepth(1);
+
+    this.physics.add.collider(player, hazards);
+
+    this.physics.add.overlap(player, hazards, () => {
+
+      this.add.text(0, 50, 'Game Over', {
+        align: 'center',
+        color: 'white',
+        fixedWidth: this.game.config.width,
+        fontFamily: 'Arial',
+        fontSize: 36
+      });
+
+      this.scene.pause();
+    });
   }
 
   preload() {
