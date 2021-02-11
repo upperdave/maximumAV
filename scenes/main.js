@@ -1,9 +1,13 @@
 let cursors;
 let hazards;
+let hud;
 let player;
 let playerMoveX;
 let score;
 let scoreText;
+let sidewalk;
+let sidewalk2;
+
 
 class Main extends Phaser.Scene {
 
@@ -19,13 +23,21 @@ class Main extends Phaser.Scene {
 
     cursors = this.input.keyboard.createCursorKeys();
 
+    // Heads-up-display
+
+    hud = this.add.sprite(0, 0, 'hud');
+    hud.setOrigin(0, 0);
+    hud.setDepth(1);
+
+    // Score text
+
     scoreText = this.add.text(0, 16, 'Score: 0', {
       align: 'center',
       fixedWidth: this.game.config.width,
       fontSize: '15px'
     });
 
-    scoreText.setDepth(1);
+    scoreText.setDepth(2);
 
     // Hazards
 
@@ -82,6 +94,16 @@ class Main extends Phaser.Scene {
 
       this.scene.pause();
     });
+
+    // Sidewalk
+
+    sidewalk = this.add.tileSprite(0, 0, 64, 640, 'sidewalk');
+    sidewalk.setOrigin(0, 0,);
+
+    sidewalk2 = this.add.tileSprite(416, 0, 64, 640, 'sidewalk');
+    sidewalk2.setOrigin(0, 0);
+    sidewalk2.flipX = true;
+
   }
 
   preload() {
@@ -92,9 +114,11 @@ class Main extends Phaser.Scene {
     this.load.image('car-1');
     this.load.image('car-2');
     this.load.image('car-3');
+    this.load.image('hud');
     this.load.image('line');
     this.load.image('oil');
     this.load.image('pothole');
+    this.load.image('sidewalk');
 
     this.load.spritesheet({
       key: 'dumpster',
