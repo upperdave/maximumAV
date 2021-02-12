@@ -1,3 +1,6 @@
+let bgSpeed;
+let buildingsLeft;
+let buildingsRight;
 let cursors;
 let hazards;
 let hud;
@@ -5,8 +8,8 @@ let player;
 let playerMoveX;
 let score;
 let scoreText;
-let sidewalk;
-let sidewalk2;
+let sidewalkLeft;
+let sidewalkRight;
 
 
 class Main extends Phaser.Scene {
@@ -23,21 +26,21 @@ class Main extends Phaser.Scene {
 
     cursors = this.input.keyboard.createCursorKeys();
 
+    // buildings speed
+
+    bgSpeed = -2.5; 
+
     // Heads-up-display
 
     hud = this.add.sprite(0, 0, 'hud');
     hud.setOrigin(0, 0);
-    hud.setDepth(1);
+    hud.setDepth(2);
 
     // Score text
 
-    scoreText = this.add.text(0, 16, 'Score: 0', {
-      align: 'center',
-      fixedWidth: this.game.config.width,
-      fontSize: '15px'
-    });
+    scoreText = this.add.dynamicBitmapText(180, 10, 'Press Start 2P', 'Score: 0', 16,) ;
+    scoreText.setDepth(3);
 
-    scoreText.setDepth(2);
 
     // Hazards
 
@@ -78,35 +81,44 @@ class Main extends Phaser.Scene {
     player.setCollideWorldBounds(true);
     player.setDepth(1);
 
+    // Buildings
+
+    buildingsLeft = this.add.tileSprite(0, 0, 64, 640, 'left-buildings');
+    buildingsLeft.setScrollFactor(0, 300);
+
+    buildingsLeft.setOrigin(0);
+    buildingsLeft.setDepth(1);
+    
+
+    buildingsRight = this.add.tileSprite(416, 0, 64, 640, 'right-buildings');
+    buildingsRight.setOrigin(0,0);
+    buildingsRight.setDepth(1);
+
+    // Sidewalk
+
+    sidewalkLeft = this.add.tileSprite(0, 0, 64, 640, 'sidewalk');
+    sidewalkLeft.setOrigin(0, 0,);
+
+    sidewalkRight = this.add.tileSprite(416, 0, 64, 640, 'sidewalk');
+    sidewalkRight.setOrigin(0, 0);
+    sidewalkRight.flipX = true;
+
     // Physics
 
     this.physics.add.collider(player, hazards);
 
     this.physics.add.overlap(player, hazards, () => {
 
-      this.add.text(0, 50, 'Game Over', {
-        align: 'center',
-        color: 'white',
-        fixedWidth: this.game.config.width,
-        fontFamily: 'Arial',
-        fontSize: 36
-      });
+      this.add.dynamicBitmapText(170, 200, 'Press Start 2P', 'Game Over', 16,);
 
       this.scene.pause();
     });
 
-    // Sidewalk
-
-    sidewalk = this.add.tileSprite(0, 0, 64, 640, 'sidewalk');
-    sidewalk.setOrigin(0, 0,);
-
-    sidewalk2 = this.add.tileSprite(416, 0, 64, 640, 'sidewalk');
-    sidewalk2.setOrigin(0, 0);
-    sidewalk2.flipX = true;
-
   }
 
   preload() {
+
+    this.load.bitmapFont('Press Start 2P', '/assets/PressStart.png', '/assets/PressStart.xml');
 
     this.load.path = '/assets/';
 
@@ -115,9 +127,11 @@ class Main extends Phaser.Scene {
     this.load.image('car-2');
     this.load.image('car-3');
     this.load.image('hud');
+    this.load.image('left-buildings')
     this.load.image('line');
     this.load.image('oil');
     this.load.image('pothole');
+    this.load.image('right-buildings')
     this.load.image('sidewalk');
 
     this.load.spritesheet({
@@ -143,6 +157,12 @@ class Main extends Phaser.Scene {
   }
 
   update() {
+
+    buildingsLeft.tilePositionY += bgSpeed;
+    buildingsRight.tilePositionY += bgSpeed;
+    sidewalkLeft.tilePositionY += bgSpeed;
+    sidewalkRight.tilePositionY += bgSpeed;
+
 
     if (cursors.left.isDown) {
       // Move player left
