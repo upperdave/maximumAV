@@ -2,7 +2,7 @@ class Start extends Phaser.Scene {
 
   constructor() {
 
-    super({ key: 'start' });
+    super();
   }
 
   create() {
