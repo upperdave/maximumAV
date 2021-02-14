@@ -11,7 +11,6 @@ let scoreText;
 let sidewalkLeft;
 let sidewalkRight;
 
-
 class Main extends Phaser.Scene {
 
   constructor() {
@@ -28,7 +27,7 @@ class Main extends Phaser.Scene {
 
     // buildings speed
 
-    bgSpeed = -2.5; 
+    bgSpeed = -2.5;
 
     // Heads-up-display
 
@@ -40,7 +39,6 @@ class Main extends Phaser.Scene {
 
     scoreText = this.add.dynamicBitmapText(180, 10, 'Press Start 2P', 'Score: 0', 16,) ;
     scoreText.setDepth(3);
-
 
     // Hazards
 
@@ -88,7 +86,6 @@ class Main extends Phaser.Scene {
 
     buildingsLeft.setOrigin(0);
     buildingsLeft.setDepth(1);
-    
 
     buildingsRight = this.add.tileSprite(416, 0, 64, 640, 'right-buildings');
     buildingsRight.setOrigin(0,0);
