@@ -7,16 +7,14 @@ class Start extends Phaser.Scene {
 
   create() {
 
-    this.add.image(
-      this.game.config.width / 2,
-      this.game.config.height / 2,
-      'start-bg'
-    );
+    const { height, width } = this.game.config;
+
+    this.add.image(width / 2, height / 2, 'start-bg');
 
     // FIXME y-axis
-    this.add.image(this.game.config.width / 2, 500, 'start-car');
-    this.add.image(this.game.config.width / 2, 100, 'start-sun');
-    this.add.image(this.game.config.width / 2, 200, 'logo');
+    this.add.image(width / 2, 500, 'start-car');
+    this.add.image(width / 2, 100, 'start-sun');
+    this.add.image(width / 2, 200, 'logo');
 
     this.input.once('pointerdown', () => {
       this.scene.switch('main');
