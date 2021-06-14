@@ -1,2 +1,1 @@
-# maximumAV
-Just a game
+# Maximum Autoversed
