@@ -10,6 +10,7 @@ let score;
 let scoreText;
 let sidewalkLeft;
 let sidewalkRight;
+let lines;
 
 class Main extends Phaser.Scene {
 
@@ -100,6 +101,10 @@ class Main extends Phaser.Scene {
     sidewalkRight.setOrigin(0, 0);
     sidewalkRight.flipX = true;
 
+    // Road lines 
+    lines = this.add.tileSprite(0, 0, 0, 640, 'lines');
+    lines.setOrigin(0, 0);
+
     // Physics
 
     this.physics.add.collider(player, hazards);
@@ -130,6 +135,7 @@ class Main extends Phaser.Scene {
     this.load.image('pothole');
     this.load.image('right-buildings')
     this.load.image('sidewalk');
+    this.load.image('lines');
 
     this.load.spritesheet({
       key: 'dumpster',
