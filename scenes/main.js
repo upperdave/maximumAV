@@ -102,8 +102,10 @@ class Main extends Phaser.Scene {
     sidewalkRight.flipX = true;
 
     // Road lines 
-    lines = this.add.tileSprite(0, 0, 0, 640, 'lines');
+
+    lines = this.add.tileSprite(64, 0, 640, 640, 'lines');
     lines.setOrigin(0, 0);
+   // lines.setDepth(1);
 
     // Physics
 
@@ -165,6 +167,7 @@ class Main extends Phaser.Scene {
     buildingsRight.tilePositionY += bgSpeed;
     sidewalkLeft.tilePositionY += bgSpeed;
     sidewalkRight.tilePositionY += bgSpeed;
+    lines.tilePositionY += bgSpeed;
 
 
     if (cursors.left.isDown) {
