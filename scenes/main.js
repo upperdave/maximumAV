@@ -6,6 +6,7 @@ let hazards;
 let hud;
 let player;
 let playerMoveX;
+let playerSpeed;
 let score;
 let scoreText;
 let sidewalkLeft;
@@ -66,6 +67,7 @@ class Main extends Phaser.Scene {
       this.game.config.width / 2,
       this.game.config.height - 32 // frameHeight
     );
+    playerSpeed = 1;
 
     this.anims.create({
       key: 'drive',
@@ -101,7 +103,7 @@ class Main extends Phaser.Scene {
     sidewalkRight.setOrigin(0, 0);
     sidewalkRight.flipX = true;
 
-    // Road lines 
+    // Road lines
 
     lines = this.add.tileSprite(64, 0, 640, 640, 'lines');
     lines.setOrigin(0, 0);
@@ -163,12 +165,13 @@ class Main extends Phaser.Scene {
 
   update() {
 
-    buildingsLeft.tilePositionY += bgSpeed;
-    buildingsRight.tilePositionY += bgSpeed;
-    sidewalkLeft.tilePositionY += bgSpeed;
-    sidewalkRight.tilePositionY += bgSpeed;
-    lines.tilePositionY += bgSpeed;
+    const deltaY = bgSpeed * playerSpeed;
 
+    buildingsLeft.tilePositionY += deltaY;
+    buildingsRight.tilePositionY += deltaY;
+    sidewalkLeft.tilePositionY += deltaY;
+    sidewalkRight.tilePositionY += deltaY;
+    lines.tilePositionY += deltaY;
 
     if (cursors.left.isDown) {
       // Move player left
@@ -178,7 +181,8 @@ class Main extends Phaser.Scene {
       player.x += playerMoveX;
     }
 
-    Phaser.Actions.IncY(hazards.getChildren(), 3);
+
+    Phaser.Actions.IncY(hazards.getChildren(), 2 * playerSpeed);
 
     hazards.children.iterate((hazard) => {
       // Is the hazard active and off the bottom of the screen?
@@ -189,6 +193,8 @@ class Main extends Phaser.Scene {
         hazard.stop();
         hazards.killAndHide(hazard);
         scoreText.setText(`Score: ${++score}`);
+
+        playerSpeed = Phaser.Math.Clamp(score / 100, 1, 10);
       }
     });
   }
