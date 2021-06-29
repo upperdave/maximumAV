@@ -19,7 +19,7 @@ class Main extends Phaser.Scene {
 
     super({ key: 'main' });
 
-    playerMoveX = 4;
+    playerMoveX = 32; // lane width
     score = 0;
   }
 
@@ -173,10 +173,10 @@ class Main extends Phaser.Scene {
     sidewalkRight.tilePositionY += deltaY;
     lines.tilePositionY += deltaY;
 
-    if (cursors.left.isDown) {
+    if (this.input.keyboard.checkDown(cursors.left, 250)) {
       // Move player left
       player.x -= playerMoveX;
-    } else if (cursors.right.isDown) {
+    } else if (this.input.keyboard.checkDown(cursors.right, 250)) {
       // Move player right
       player.x += playerMoveX;
     }
