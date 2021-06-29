@@ -181,6 +181,8 @@ class Main extends Phaser.Scene {
       player.x += playerMoveX;
     }
 
+    // Prevent the player from driving off-road.
+    player.x = Phaser.Math.Clamp(player.x, 80, this.game.config.width - 80);
 
     Phaser.Actions.IncY(hazards.getChildren(), 2 * playerSpeed);
 
