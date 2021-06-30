@@ -11,6 +11,7 @@ let scoreText;
 let sidewalkLeft;
 let sidewalkRight;
 let lines;
+let music;
 
 class Main extends Phaser.Scene {
 
@@ -105,7 +106,12 @@ class Main extends Phaser.Scene {
 
     lines = this.add.tileSprite(64, 0, 640, 640, 'lines');
     lines.setOrigin(0, 0);
-   // lines.setDepth(1);
+ 
+    // Music
+
+    music = this.sound.add('music')
+    music.loop = true;
+    music.play();
 
     // Physics
 
@@ -123,6 +129,7 @@ class Main extends Phaser.Scene {
   preload() {
 
     this.load.bitmapFont('Press Start 2P', '/assets/PressStart.png', '/assets/PressStart.xml');
+    this.load.audio('music', '/assets/MaximumAV.mp3', '/assets/MaximumAV.ogg' );
 
     this.load.path = '/assets/';
 
@@ -138,6 +145,7 @@ class Main extends Phaser.Scene {
     this.load.image('right-buildings')
     this.load.image('sidewalk');
     this.load.image('lines');
+
 
     this.load.spritesheet({
       key: 'dumpster',
