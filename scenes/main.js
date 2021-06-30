@@ -122,6 +122,7 @@ class Main extends Phaser.Scene {
       this.add.dynamicBitmapText(170, 200, 'Press Start 2P', 'Game Over', 16,);
 
       this.scene.pause();
+      music.pause();
     });
 
   }
