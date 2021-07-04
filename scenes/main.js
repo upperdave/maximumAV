@@ -6,12 +6,14 @@ let hazards;
 let hud;
 let player;
 let playerMoveX;
+let playerSpeed;
 let score;
 let scoreText;
 let sidewalkLeft;
 let sidewalkRight;
 let lines;
 let music;
+let vehicles;
 
 class Main extends Phaser.Scene {
 
@@ -19,7 +21,7 @@ class Main extends Phaser.Scene {
 
     super({ key: 'main' });
 
-    playerMoveX = 4;
+    playerMoveX = 32; // lane width
     score = 0;
   }
 
@@ -48,7 +50,7 @@ class Main extends Phaser.Scene {
 
     this.time.addEvent({
       callback: spawnHazard,
-      delay: 500,
+      delay: 1000,
       loop: true
     });
 
@@ -61,12 +63,23 @@ class Main extends Phaser.Scene {
       repeat: -1
     });
 
+    // Vehicles
+
+    vehicles = this.physics.add.group();
+
+    this.time.addEvent({
+      callback: spawnVehicle,
+      delay: 500,
+      loop: true
+    });
+
     // Player
 
     player = this.physics.add.sprite(
       this.game.config.width / 2,
       this.game.config.height - 32 // frameHeight
     );
+    playerSpeed = 1;
 
     this.anims.create({
       key: 'drive',
@@ -79,7 +92,7 @@ class Main extends Phaser.Scene {
 
     player.play('drive');
     player.setCollideWorldBounds(true);
-    player.setDepth(1);
+    player.setDepth(2);
 
     // Buildings
 
@@ -102,11 +115,11 @@ class Main extends Phaser.Scene {
     sidewalkRight.setOrigin(0, 0);
     sidewalkRight.flipX = true;
 
-    // Road lines 
+    // Road lines
 
     lines = this.add.tileSprite(64, 0, 640, 640, 'lines');
     lines.setOrigin(0, 0);
- 
+
     // Music
 
     music = this.sound.add('music')
@@ -116,6 +129,7 @@ class Main extends Phaser.Scene {
     // Physics
 
     this.physics.add.collider(player, hazards);
+    this.physics.add.collider(player, vehicles);
 
     this.physics.add.overlap(player, hazards, () => {
 
@@ -125,6 +139,13 @@ class Main extends Phaser.Scene {
       music.pause();
     });
 
+    this.physics.add.overlap(player, vehicles, () => {
+
+      this.add.dynamicBitmapText(170, 200, 'Press Start 2P', 'Game Over', 16,);
+
+      this.scene.pause();
+      music.pause();
+    });
   }
 
   preload() {
@@ -140,13 +161,11 @@ class Main extends Phaser.Scene {
     this.load.image('car-3');
     this.load.image('hud');
     this.load.image('left-buildings')
-    this.load.image('line');
+    this.load.image('lines');
     this.load.image('oil');
     this.load.image('pothole');
     this.load.image('right-buildings')
     this.load.image('sidewalk');
-    this.load.image('lines');
-
 
     this.load.spritesheet({
       key: 'dumpster',
@@ -172,22 +191,27 @@ class Main extends Phaser.Scene {
 
   update() {
 
-    buildingsLeft.tilePositionY += bgSpeed;
-    buildingsRight.tilePositionY += bgSpeed;
-    sidewalkLeft.tilePositionY += bgSpeed;
-    sidewalkRight.tilePositionY += bgSpeed;
-    lines.tilePositionY += bgSpeed;
+    const deltaY = bgSpeed * playerSpeed;
 
+    buildingsLeft.tilePositionY += deltaY;
+    buildingsRight.tilePositionY += deltaY;
+    sidewalkLeft.tilePositionY += deltaY;
+    sidewalkRight.tilePositionY += deltaY;
+    lines.tilePositionY += deltaY;
 
-    if (cursors.left.isDown) {
+    if (this.input.keyboard.checkDown(cursors.left, 250)) {
       // Move player left
       player.x -= playerMoveX;
-    } else if (cursors.right.isDown) {
+    } else if (this.input.keyboard.checkDown(cursors.right, 250)) {
       // Move player right
       player.x += playerMoveX;
     }
 
-    Phaser.Actions.IncY(hazards.getChildren(), 3);
+    // Prevent the player from driving off-road.
+    player.x = Phaser.Math.Clamp(player.x, 80, this.game.config.width - 80);
+
+    Phaser.Actions.IncY(hazards.getChildren(), -deltaY);
+    Phaser.Actions.IncY(vehicles.getChildren(), 2 * playerSpeed);
 
     hazards.children.iterate((hazard) => {
       // Is the hazard active and off the bottom of the screen?
@@ -197,9 +221,24 @@ class Main extends Phaser.Scene {
       ) {
         hazard.stop();
         hazards.killAndHide(hazard);
-        scoreText.setText(`Score: ${++score}`);
+        score++;
       }
     });
+
+    vehicles.children.iterate((vehicle) => {
+      // Is the vehicle active and off the bottom of the screen?
+      if (
+        vehicle.active
+        && vehicle.y > this.game.config.height + vehicle.height / 2
+      ) {
+        vehicle.stop();
+        vehicles.killAndHide(vehicle);
+        score++;
+      }
+    });
+
+    playerSpeed = Phaser.Math.Clamp(score / 100, 1, 10);
+    scoreText.setText(`Score: ${score}`);
   }
 }
 
@@ -214,14 +253,9 @@ function spawnHazard() {
   const y = -32;
 
   const key = Phaser.Math.RND.pick([
-    'bus',
-    'car-1',
-    'car-2',
-    'car-3',
     'dumpster',
     'oil',
-    'pothole',
-    'semi'
+    'pothole'
   ]);
 
   const hazard = hazards.get(x, y);
@@ -232,6 +266,7 @@ function spawnHazard() {
 
   hazard
     .setActive(true)
+    .setDepth(0)
     .setTexture(key)
     .setVisible(true);
 
@@ -239,6 +274,34 @@ function spawnHazard() {
   if (key === 'dumpster') {
     hazard.play('burn');
   }
+}
+
+function spawnVehicle() {
+
+  const lane = Phaser.Math.RND.between(1, 11);
+
+  const x = 32 * lane + 48;
+  const y = -32;
+
+  const key = Phaser.Math.RND.pick([
+    'bus',
+    'car-1',
+    'car-2',
+    'car-3',
+    'semi'
+  ]);
+
+  const vehicle = vehicles.get(x, y);
+
+  if (!vehicle) {
+    return;
+  }
+
+  vehicle
+    .setActive(true)
+    .setDepth(1)
+    .setTexture(key)
+    .setVisible(true);
 }
 
 export default Main;

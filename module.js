@@ -5,7 +5,7 @@ const config = {
   backgroundColor: '77607d',
   height: 640,
   physics: {
-    arcade: { debug: true },
+    // arcade: { debug: true },
     default: 'arcade'
   },
   scene: [ Start, Main ],
