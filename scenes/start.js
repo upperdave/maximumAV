@@ -1,9 +1,6 @@
 class Start extends Phaser.Scene {
 
-  constructor() {
-
-    super();
-  }
+  constructor() { super(); }
 
   create() {
 
@@ -17,7 +14,7 @@ class Start extends Phaser.Scene {
     this.add.image(width / 2, 200, 'logo');
 
     this.input.once('pointerdown', () => {
-      this.scene.switch('main');
+      this.scene.switch('Main');
     }, this);
   }
 
@@ -25,13 +22,13 @@ class Start extends Phaser.Scene {
 
     this.load.path = '../assets/';
 
+    // Images
+
     this.load.image('logo');
     this.load.image('start-bg');
     this.load.image('start-car');
     this.load.image('start-sun');
   }
-
-  update() {}
 }
 
 export default Start;
