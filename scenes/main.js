@@ -103,14 +103,8 @@ class Main extends Phaser.Scene {
 
   gameOver() {
 
-    const { height, width } = this.game.config;
-
-    this.add.dynamicBitmapText(width / 2, height / 2, 'PressStart', 'Game Over', 32)
-      .setDepth(3)
-      .setOrigin(0.5, 0.5);
-
     this.music.pause();
-    this.scene.pause();
+    this.scene.start('GameOver');
   }
 
   init() {

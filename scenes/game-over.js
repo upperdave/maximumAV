@@ -1,6 +1,6 @@
-class Start extends Phaser.Scene {
+class GameOver extends Phaser.Scene {
 
-  constructor() { super(); }
+  constructor() { super('GameOver'); }
 
   create() {
 
@@ -11,7 +11,10 @@ class Start extends Phaser.Scene {
     // FIXME y-axis
     this.add.image(width / 2, 500, 'start-car');
     this.add.image(width / 2, 100, 'start-sun');
-    this.add.image(width / 2, 200, 'logo');
+
+    this.add.dynamicBitmapText(width / 2, height / 2, 'PressStart', 'Game Over', 32)
+      .setDepth(3)
+      .setOrigin(0.5, 0.5);
 
     this.input.once('pointerdown', () => {
       this.scene.start('Main');
@@ -24,11 +27,10 @@ class Start extends Phaser.Scene {
 
     // Images
 
-    this.load.image('logo');
     this.load.image('start-bg');
     this.load.image('start-car');
     this.load.image('start-sun');
   }
 }
 
-export default Start;
+export default GameOver;
