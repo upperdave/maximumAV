@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build": "esbuild source/script.js --bundle --sourcemap",
+    "dev": "npm run build -- --servedir=public",
+    "prod": "npm run build -- --minify --outdir=public"
+  },
+  "dependencies": {
+    "esbuild": "^0.12.16"
+  }
+}
