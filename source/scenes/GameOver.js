@@ -20,17 +20,6 @@ class GameOver extends Phaser.Scene {
       this.scene.start('Main');
     }, this);
   }
-
-  preload() {
-
-    this.load.path = '../assets/';
-
-    // Images
-
-    this.load.image('start-bg');
-    this.load.image('start-car');
-    this.load.image('start-sun');
-  }
 }
 
 export default GameOver;

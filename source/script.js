@@ -1,6 +1,7 @@
-import GameOver from './scenes/game-over.js';
-import Main from './scenes/main.js';
-import Start from './scenes/start.js';
+import GameOver from './scenes/GameOver';
+import Main from './scenes/main';
+import Preload from './scenes/Preload';
+import Title from './scenes/Title';
 
 const config = {
   backgroundColor: '77607d',
@@ -9,7 +10,7 @@ const config = {
     // arcade: { debug: true },
     default: 'arcade'
   },
-  scene: [ Start, Main, GameOver ],
+  scene: [ Preload, Title, Main, GameOver ],
   width: 480
 };
 
